@@ -1,2 +1,53 @@
 ---
-# tasks file for provision-aws-system-account
+- name: create system account
+  user:
+    name: "{{ system_account }}"
+    shell: /bin/bash
+    state: present
+    comment: This is an ansbile managed account
+  tags:
+    - provision-system-account
+
+- name: create .aws directory
+  file:
+    path: /home/{{ system_account }}/.aws
+    state: directory
+  become: yes
+  become_user: "{{ system_account }}"
+  tags:
+    - provision-system-account
+
+- name: generate aws credentials
+  copy:
+    content: |
+      [default]
+      AWS_ACCESS_KEY_ID={{ aws_key_id }}
+      AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}
+    dest: /home/{{ system_account }}/.aws/credentials
+    mode: "0600"
+  become: yes
+  become_user: "{{ system_account }}"
+  tags:
+    - provision-system-account
+    - provision-awscli-config
+
+- name: generate aws config
+  copy:
+    content: |
+      [default]
+      output = json
+    dest: /home/{{ system_account }}/.aws/config
+    mode: "0600"
+  become: yes
+  become_user: "{{ system_account }}"
+  tags:
+    - provision-system-account
+    - provision-awscli-config
+
+- name: install awscli
+  pip:
+    name: awscli
+    state: present
+  tags:
+    - provision-system-account
+    - install-python-awscli
