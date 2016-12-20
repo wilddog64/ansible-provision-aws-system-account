@@ -1,4 +1,20 @@
 ---
+- name: enable yum repo # failed, so we try to install epel 7.8
+  yum:
+    name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
+    state: present
+
+- name: install python-pip # CentOS also do have pip, so we install python-pip
+  yum:
+    name: python-pip
+    state: latest
+
+- name: upgrade pip  # we also need to upgrade pip itself
+  pip:
+    name: pip
+    extra_args: --upgrade
+    state: latest
+
 - name: create system account
   user:
     name: "{{ system_account }}"
@@ -55,6 +71,8 @@
   pip:
     name: awscli
     state: present
+  become: yes
+  become_user: "{{ system_account }}"
   tags:
     - provision-system-account
     - install-python-awscli
