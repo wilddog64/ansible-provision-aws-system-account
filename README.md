@@ -1,31 +1,56 @@
-Role Name
+provision-aws-system-account
 =========
 
-A brief description of the role goes here.
+an ansible role to provision an AWS ready account. The role will perform the following steps to get an accout to be aws ready
+
+* create a system account with a choose of enabling `sudo` and disable `requiretty` for the purpose of automation
+* deploy `aws` key and secret key
+* enable epel repo
+* install python-pip
+* install awscli
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* python-pip
+* awscli
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* aws_key_id - an AWS access key id
+* aws_secret_access_key - an AWS secret access key
+* system_account - is an account that this role will work on to make it `AWS` ready.
+* enable_sudoer - should this `system account` have sudo enabled. Default is `false`.
+* disable_requiretty - should this `system account` disable `requiretty`. Default is `false`.
+* deploy_aws_cred - should `AWS Credential` deploy to this `system account`. Default is `false`. When set to `true`, the `awscli` command line tool will also be installed.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+The following playbook will provsion `ec2-user` and enable `sudo` and disable `requirettype`. Also configure this
+`system account` to be able to talk to AWS cloud platform.
 
-    - hosts: servers
+Note: for the security purpose, the `aws key` and `aws secrect key` should be encrypted use `ansbile-vault`. That's
+you see this example has `vault_aws_access_key_id` and `vault_aws_secret_access_key` as they are variables defined in
+`ansible-vault`. For the information how to use `ansble-vault`, please refer to [this document](http://docs.ansible.com/ansible/playbooks_vault.html).
+
+    - hosts: all
+      vars:
+        system_account: ec2-user
+        enable_sudoer: yes
+        disable_requiretty: yes
+        deploy_aws_cred: yes
+        aws_key_id: "{{ vault_aws_access_key_id }}"
+        aws_secret_access_key: "{{ vault_aws_secret_access_key }}"
+
       roles:
-         - { role: username.rolename, x: 42 }
+         - provision-aws-system-account
 
 License
 -------
