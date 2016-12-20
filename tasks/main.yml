@@ -3,17 +3,20 @@
   yum:
     name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
     state: present
+  when: "{{ deploy_aws_cred }}"
 
 - name: install python-pip # CentOS also do have pip, so we install python-pip
   yum:
     name: python-pip
     state: latest
+  become_user: "{{ system_account }}"
 
 - name: upgrade pip  # we also need to upgrade pip itself
   pip:
     name: pip
     extra_args: --upgrade
     state: latest
+  become: yes
 
 - name: create system account
   user:
@@ -49,6 +52,7 @@
     state: directory
   become: yes
   become_user: "{{ system_account }}"
+  when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account
 
@@ -62,6 +66,7 @@
     mode: "0600"
   become: yes
   become_user: "{{ system_account }}"
+  when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account
     - provision-awscli-config
@@ -75,6 +80,7 @@
     mode: "0600"
   become: yes
   become_user: "{{ system_account }}"
+  when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account
     - provision-awscli-config
@@ -83,6 +89,7 @@
   pip:
     name: awscli
     state: present
+  when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account
     - install-python-awscli

@@ -3,3 +3,4 @@
 system_account: ec2-user
 enable_sudoer: false
 disable_requiretty: false
+deploy_aws_cred: false
