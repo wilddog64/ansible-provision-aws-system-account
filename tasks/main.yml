@@ -8,6 +8,13 @@
   tags:
     - provision-system-account
 
+- name: provide sudo power
+  copy:
+    content: |
+      %{{ system_account }} ALL=(ALL) NOPASSWD: ALL
+    dest: /etc/sudoers.d/{{ system_account }}
+  when: "{{ enable_sudoer }}"
+
 - name: create .aws directory
   file:
     path: /home/{{ system_account }}/.aws
