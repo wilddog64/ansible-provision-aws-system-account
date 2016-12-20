@@ -1,23 +1,4 @@
 ---
-- name: enable yum repo # failed, so we try to install epel 7.8
-  yum:
-    name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
-    state: present
-  when: "{{ deploy_aws_cred }}"
-
-- name: install python-pip # CentOS also do have pip, so we install python-pip
-  yum:
-    name: python-pip
-    state: latest
-  become_user: "{{ system_account }}"
-
-- name: upgrade pip  # we also need to upgrade pip itself
-  pip:
-    name: pip
-    extra_args: --upgrade
-    state: latest
-  become: yes
-
 - name: create system account
   user:
     name: "{{ system_account }}"
@@ -45,6 +26,25 @@
     ansible_ssh_pipelining: no
   tags:
     - disable-requiretty
+
+- name: enable yum repo # failed, so we try to install epel 7.8
+  yum:
+    name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
+    state: present
+  when: "{{ deploy_aws_cred }}"
+
+- name: install python-pip # CentOS also do have pip, so we install python-pip
+  yum:
+    name: python-pip
+    state: latest
+  become: yes
+
+- name: upgrade pip  # we also need to upgrade pip itself
+  pip:
+    name: pip
+    extra_args: --upgrade
+    state: latest
+  become: yes
 
 - name: create .aws directory
   file:
