@@ -1,3 +1,4 @@
 ---
 # defaults file for provision-aws-system-account
 system_account: ec2-user
+enable_sudoer: false
