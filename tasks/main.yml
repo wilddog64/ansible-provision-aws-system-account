@@ -83,7 +83,6 @@
   pip:
     name: awscli
     state: present
-  become_user: "{{ system_account }}"
   tags:
     - provision-system-account
     - install-python-awscli
