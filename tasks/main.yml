@@ -71,7 +71,6 @@
   pip:
     name: awscli
     state: present
-  become: yes
   become_user: "{{ system_account }}"
   tags:
     - provision-system-account
