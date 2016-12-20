@@ -31,6 +31,18 @@
     dest: /etc/sudoers.d/{{ system_account }}
   when: "{{ enable_sudoer }}"
 
+- name: disable requiretty for a system account {{ system_account }}
+  copy:
+    content: |
+      Defaults:{{ system_account }} !requiretty
+    dest: /etc/sudoers.d/999-disable-requiretty
+    mode: 0440
+  when: "{{ disable_requiretty }}"
+  vars:
+    ansible_ssh_pipelining: no
+  tags:
+    - disable-requiretty
+
 - name: create .aws directory
   file:
     path: /home/{{ system_account }}/.aws
