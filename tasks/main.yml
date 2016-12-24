@@ -13,6 +13,7 @@
     content: |
       %{{ system_account }} ALL=(ALL) NOPASSWD: ALL
     dest: /etc/sudoers.d/{{ system_account }}
+    mode: "0440"
   when: "{{ enable_sudoer }}"
 
 - name: disable requiretty for a system account {{ system_account }}
