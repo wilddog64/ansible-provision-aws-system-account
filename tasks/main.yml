@@ -1,4 +1,6 @@
 ---
+- include: "tasks/{{ ansible_os_family }}-install-pip.yml"
+
 - name: create system account
   user:
     name: "{{ system_account }}"
@@ -28,25 +30,6 @@
   tags:
     - disable-requiretty
 
-- name: enable yum repo # failed, so we try to install epel 7.8
-  yum:
-    name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
-    state: present
-  when: "{{ deploy_aws_cred }}"
-
-- name: install python-pip # CentOS also do have pip, so we install python-pip
-  yum:
-    name: python-pip
-    state: latest
-  become: yes
-
-- name: upgrade pip  # we also need to upgrade pip itself
-  pip:
-    name: pip
-    extra_args: --upgrade
-    state: latest
-  become: yes
-
 - name: create .aws directory
   file:
     path: /home/{{ system_account }}/.aws
@@ -65,8 +48,6 @@
       AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}
     dest: /home/{{ system_account }}/.aws/credentials
     mode: "0600"
-  become: yes
-  become_user: "{{ system_account }}"
   when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account
@@ -79,8 +60,6 @@
       output = json
     dest: /home/{{ system_account }}/.aws/config
     mode: "0600"
-  become: yes
-  become_user: "{{ system_account }}"
   when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account

@@ -1,0 +1,14 @@
+---
+- name: install python-pip # CentOS also do have pip, so we install python-pip
+  apt:
+    name: python-pip
+    state: latest
+  become: yes
+
+- name: upgrade pip  # we also need to upgrade pip itself
+  pip:
+    name: pip
+    extra_args: --upgrade
+    state: latest
+  become: yes
+
