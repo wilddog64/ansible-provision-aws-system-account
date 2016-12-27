@@ -1,11 +1,14 @@
 ---
 - include: "tasks/{{ ansible_os_family }}-install-pip.yml"
+  when: "{{ deploy_aws_cred }}"
 
 - name: create system account
   user:
     name: "{{ system_account }}"
     shell: /bin/bash
+    createhome: "{{ createhome }}"
     state: present
+    system: "{{ system }}"
     comment: This is an ansbile managed account
   tags:
     - provision-system-account
