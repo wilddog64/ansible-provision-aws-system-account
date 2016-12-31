@@ -1,4 +1,7 @@
 ---
+- name: gathering facts
+  setup:
+
 - include: "tasks/{{ ansible_os_family }}-install-pip.yml"
   when: "{{ deploy_aws_cred }}"
 
