@@ -6,3 +6,4 @@ disable_requiretty: false
 deploy_aws_cred: false
 createhome: yes
 system: no
+userhome: /home/{{ system_account }}
