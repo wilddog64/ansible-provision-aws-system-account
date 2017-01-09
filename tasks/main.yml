@@ -15,6 +15,18 @@
     comment: This is an ansbile managed account
   tags:
     - provision-system-account
+  when: "not {{ createhome }}"
+
+- name: create system account with home
+  user:
+    name: "{{ system_account }}"
+    shell: /bin/bash
+    state: present
+    comment: This is an ansbile managed account
+    home: "{{ userhome }}"
+  tags:
+    - provision-system-account
+  when: "{{ createhome }}"
 
 - name: provide sudo power
   copy:
@@ -75,10 +87,13 @@
     - provision-system-account
     - provision-awscli-config
 
-- name: install awscli
+- name: install aws sdk
   pip:
-    name: awscli
+    name: "{{ item }}"
     state: present
+  with_items:
+    - awscli
+    - boto
   when: "{{ deploy_aws_cred }}"
   tags:
     - provision-system-account
